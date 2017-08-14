@@ -29,67 +29,61 @@ class Hooks extends \Controller
         $objNode        = new HtmlPageCrawler('<div>' . $objTemplate->text . '</div>');
         $intTextAmount  = 0;
         $strCssSelector = $objModule->paginationCssSelector ?: '';
-        $arrFilter      = array_map(
-            function ($strTag) use ($strCssSelector)
-            {
-                return $strCssSelector . ' > ' . $strTag;
-            },
-            static::$arrTags
-        );
+        $arrTags = static::$arrTags;
 
         $intPage = Request::getGet('page_n' . $objModule->id);
 
         $objNode->filter('[class*="ce_"]')->each(
-            function ($objElement) use (&$intTextAmount, $intMaxAmount, $intPage, $arrFilter, $objNode)
+            function ($objElement) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags, $objNode, $strCssSelector)
             {
                 if (strpos($objElement->getAttribute('class'), 'ce_text') !== false)
                 {
-                    $objElement->filter(implode(',', $arrFilter))->each(function($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage) {
-                        if ($intPage && is_numeric($intPage))
+                    $objElement->filter($strCssSelector . ' > *')->each(function($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags) {
+                        if (in_array($objParagraph->getNode(0)->tagName, $arrTags))
                         {
-                            $intTextAmount += strlen($objParagraph->text());
-
-                            if ($intTextAmount < ($intPage - 1) * $intMaxAmount || $intTextAmount > $intPage * $intMaxAmount)
+                            if ($intPage && is_numeric($intPage))
                             {
-                                $objParagraph->remove();
+                                $intTextAmount += strlen($objParagraph->text());
+                            }
+                            else
+                            {
+                                $intTextAmount += strlen($objParagraph->text());
                             }
                         }
-                        else
-                        {
-                            $intTextAmount += strlen($objParagraph->text());
 
-                            if ($intTextAmount > $intMaxAmount)
-                            {
-                                $objParagraph->remove();
-                            }
-                        }
+                        static::removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objParagraph);
                     });
                 }
                 else
                 {
-                    if ($intPage && is_numeric($intPage))
-                    {
-                        if ($intTextAmount < ($intPage - 1) * $intMaxAmount || $intTextAmount > $intPage * $intMaxAmount)
-                        {
-                            $objElement->remove();
-                        }
-                    }
-                    else
-                    {
-                        if ($intTextAmount > $intMaxAmount)
-                        {
-                            $objElement->remove();
-                        }
-                    }
+                    static::removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objElement);
                 }
             }
         );
 
-        $objTemplate->text = $objNode->saveHTML();
+        $objTemplate->text = str_replace(['%7B', '%7D'], ['{', '}'], $objNode->saveHTML());
 
         // add pagination
         $objPagination               =
             new \Pagination(ceil($intTextAmount / $intMaxAmount), 1, \Config::get('maxPaginationLinks'), 'page_n' . $objModule->id);
         $objTemplate->newsPagination = $objPagination->generate("\n  ");
+    }
+
+    private static function removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objElement)
+    {
+        if ($intPage && is_numeric($intPage))
+        {
+            if ($intTextAmount < ($intPage - 1) * $intMaxAmount || $intTextAmount > $intPage * $intMaxAmount)
+            {
+                $objElement->remove();
+            }
+        }
+        else
+        {
+            if ($intTextAmount > $intMaxAmount)
+            {
+                $objElement->remove();
+            }
+        }
     }
 }
