@@ -36,9 +36,9 @@ class Hooks extends \Controller
         $objNode->filter('[class*="ce_"]')->each(
             function ($objElement) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags, $objNode, $strCssSelector)
             {
-                if (strpos($objElement->getAttribute('class'), 'ce_text') !== false)
+                if (strpos($objElement->getAttribute('class'), 'ce_text') !== false && strpos($objElement->html(), 'figure') === false)
                 {
-                    $objElement->filter($strCssSelector . ' > *')->each(function($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags) {
+                    $objElement->filter($strCssSelector . ' > *, figure')->each(function($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags) {
                         if (in_array($objParagraph->getNode(0)->tagName, $arrTags))
                         {
                             if ($intPage && is_numeric($intPage))
@@ -73,7 +73,7 @@ class Hooks extends \Controller
     {
         if ($intPage && is_numeric($intPage))
         {
-            if ($intTextAmount < ($intPage - 1) * $intMaxAmount || $intTextAmount > $intPage * $intMaxAmount)
+            if (($intTextAmount < ($intPage - 1) * $intMaxAmount || $intTextAmount > $intPage * $intMaxAmount))
             {
                 $objElement->remove();
             }
