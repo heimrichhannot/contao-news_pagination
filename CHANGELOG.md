@@ -1,10 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2017-08-17
+
+### Fixed
+- css selectors
+
 ## [1.0.2] - 2017-08-15
 
-### Added
-- fixed pagination algorithm for figure in ce_text
+### Fixed
+- pagination algorithm for figure in ce_text
 
 ## [1.0.1] - 2017-07-31
 

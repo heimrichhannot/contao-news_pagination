@@ -14,4 +14,4 @@ This module offers a character count based pagination for the news reader.
 
 ### Known limitations
 
-- currently only ce_text is supported for splitting, other elements are removed properly according to current page number though (completely)
+- currently only ce_text not nested in another content element (like an accordeon) is supported for splitting, other elements are removed properly according to current page number though (completely)

@@ -12,7 +12,7 @@ $arrDca['palettes']['newsreader'] =
 /**
  * Subpalettes
  */
-$arrDca['subpalettes']['addPagination'] = 'paginationMaxCharCount,paginationCssSelector';
+$arrDca['subpalettes']['addPagination'] = 'paginationMaxCharCount,paginationParentCssSelector,paginationCeTextCssSelector';
 
 /**
  * Fields
@@ -32,11 +32,18 @@ $arrFields = [
         'eval'                    => ['rgxp' => 'digit', 'tl_class' => 'w50 clr', 'mandatory' => true],
         'sql'                     => "int(10) unsigned NOT NULL default '0'"
     ],
-    'paginationCssSelector' => [
-        'label'                   => &$GLOBALS['TL_LANG']['tl_module']['paginationCssSelector'],
+    'paginationParentCssSelector' => [
+        'label'                   => &$GLOBALS['TL_LANG']['tl_module']['paginationParentCssSelector'],
         'exclude'                 => true,
         'inputType'               => 'text',
-        'eval'                    => ['tl_class' => 'w50'],
+        'eval'                    => ['tl_class' => 'w50', 'decodeEntities' => true],
+        'sql'                     => "varchar(128) NOT NULL default ''"
+    ],
+    'paginationCeTextCssSelector' => [
+        'label'                   => &$GLOBALS['TL_LANG']['tl_module']['paginationCeTextCssSelector'],
+        'exclude'                 => true,
+        'inputType'               => 'text',
+        'eval'                    => ['tl_class' => 'w50', 'decodeEntities' => true],
         'sql'                     => "varchar(128) NOT NULL default ''"
     ]
 ];

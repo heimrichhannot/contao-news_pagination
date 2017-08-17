@@ -24,35 +24,38 @@ class Hooks extends \Controller
             return;
         }
 
-        $intMaxAmount   = $objModule->paginationMaxCharCount;
+        $intMaxAmount = $objModule->paginationMaxCharCount;
         // add wrapper div since remove() called on root elements doesn't work (bug?)
-        $objNode        = new HtmlPageCrawler('<div>' . $objTemplate->text . '</div>');
-        $intTextAmount  = 0;
-        $strCssSelector = $objModule->paginationCssSelector ?: '';
-        $arrTags = static::$arrTags;
+        $objNode              = new HtmlPageCrawler('<div><div class="news-pagination-content">' . $objTemplate->text . '</div></div>');
+        $intTextAmount        = 0;
+        $strCeTextCssSelector = $objModule->paginationCeTextCssSelector ? $objModule->paginationCeTextCssSelector . ' > *' : '*';
+        $arrTags              = static::$arrTags;
 
         $intPage = Request::getGet('page_n' . $objModule->id);
 
-        $objNode->filter('[class*="ce_"]')->each(
-            function ($objElement) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags, $objNode, $strCssSelector)
+        $objNode->filter('.news-pagination-content > [class*="ce_"]')->each(
+            function ($objElement) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags, $objNode, $strCeTextCssSelector)
             {
                 if (strpos($objElement->getAttribute('class'), 'ce_text') !== false && strpos($objElement->html(), 'figure') === false)
                 {
-                    $objElement->filter($strCssSelector . ' > *, figure')->each(function($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags) {
-                        if (in_array($objParagraph->getNode(0)->tagName, $arrTags))
+                    $objElement->filter($strCeTextCssSelector . ', figure')->each(
+                        function ($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags)
                         {
-                            if ($intPage && is_numeric($intPage))
+                            if (in_array($objParagraph->getNode(0)->tagName, $arrTags))
                             {
-                                $intTextAmount += strlen($objParagraph->text());
+                                if ($intPage && is_numeric($intPage))
+                                {
+                                    $intTextAmount += strlen($objParagraph->text());
+                                }
+                                else
+                                {
+                                    $intTextAmount += strlen($objParagraph->text());
+                                }
                             }
-                            else
-                            {
-                                $intTextAmount += strlen($objParagraph->text());
-                            }
-                        }
 
-                        static::removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objParagraph);
-                    });
+                            static::removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objParagraph);
+                        }
+                    );
                 }
                 else
                 {
