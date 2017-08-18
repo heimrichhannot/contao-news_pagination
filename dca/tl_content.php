@@ -22,6 +22,7 @@ $arrDca['palettes'][\HeimrichHannot\NewsPagination\NewsPagination::CONTENT_ELEME
  */
 $arrFields = [
     'newsPaginationStopCreated' => [
+        'eval' => ['doNotCopy' => true],
         'sql' => "char(1) NOT NULL default ''"
     ]
 ];
