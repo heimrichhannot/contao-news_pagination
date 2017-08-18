@@ -8,15 +8,6 @@ use Wa72\HtmlPageDom\HtmlPageCrawler;
 
 class Hooks extends \Controller
 {
-    static $arrTags = [
-        'p',
-        'span',
-        'strong',
-        'i',
-        'em',
-        'div'
-    ];
-
     public function addNewsPagination($objTemplate, $arrArticle, $objModule)
     {
         if (!$objModule->addPagination)
@@ -24,42 +15,31 @@ class Hooks extends \Controller
             return;
         }
 
-        $intMaxAmount = $objModule->paginationMaxCharCount;
+        $intPage = \Input::get('page_n' . $objModule->id) ?: 1;
+        $intMaxIndex = 0;
+
         // add wrapper div since remove() called on root elements doesn't work (bug?)
-        $objNode              = new HtmlPageCrawler('<div><div class="news-pagination-content">' . $objTemplate->text . '</div></div>');
-        $intTextAmount        = 0;
-        $strCeTextCssSelector = $objModule->paginationCeTextCssSelector ? $objModule->paginationCeTextCssSelector . ' > *' : '*';
-        $arrTags              = static::$arrTags;
+        $objNode          = new HtmlPageCrawler('<div><div class="news-pagination-content">' . $objTemplate->text . '</div></div>');
+        $objStartElements = $objNode->filter('.news-pagination-content > [class*="ce_news_pagination_start"]');
 
-        $intPage = Request::getGet('page_n' . $objModule->id);
+        if ($objStartElements->count() < 1)
+        {
+            return;
+        }
 
-        $objNode->filter('.news-pagination-content > [class*="ce_"]')->each(
-            function ($objElement) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags, $objNode, $strCeTextCssSelector)
+        $objStartElements->each(
+            function ($objElement) use ($intPage, &$intMaxIndex)
             {
-                if (strpos($objElement->getAttribute('class'), 'ce_text') !== false && strpos($objElement->html(), 'figure') === false)
-                {
-                    $objElement->filter($strCeTextCssSelector . ', figure')->each(
-                        function ($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags)
-                        {
-                            if (in_array($objParagraph->getNode(0)->tagName, $arrTags))
-                            {
-                                if ($intPage && is_numeric($intPage))
-                                {
-                                    $intTextAmount += strlen($objParagraph->text());
-                                }
-                                else
-                                {
-                                    $intTextAmount += strlen($objParagraph->text());
-                                }
-                            }
+                $intIndex = $objElement->getAttribute('data-index');
 
-                            static::removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objParagraph);
-                        }
-                    );
-                }
-                else
+                if ($intIndex > $intMaxIndex)
                 {
-                    static::removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objElement);
+                    $intMaxIndex = $intIndex;
+                }
+
+                if ($intPage != $intIndex)
+                {
+                    $objElement->remove();
                 }
             }
         );
@@ -68,25 +48,7 @@ class Hooks extends \Controller
 
         // add pagination
         $objPagination               =
-            new \Pagination(ceil($intTextAmount / $intMaxAmount), 1, \Config::get('maxPaginationLinks'), 'page_n' . $objModule->id);
+            new \Pagination($intMaxIndex, 1, \Config::get('maxPaginationLinks'), 'page_n' . $objModule->id);
         $objTemplate->newsPagination = $objPagination->generate("\n  ");
-    }
-
-    private static function removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objElement)
-    {
-        if ($intPage && is_numeric($intPage))
-        {
-            if (($intTextAmount < ($intPage - 1) * $intMaxAmount || $intTextAmount > $intPage * $intMaxAmount))
-            {
-                $objElement->remove();
-            }
-        }
-        else
-        {
-            if ($intTextAmount > $intMaxAmount)
-            {
-                $objElement->remove();
-            }
-        }
     }
 }

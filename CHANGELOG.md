@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2017-08-18
+
+### Changed
+- switched to manual pagination breaks
+
 ## [1.0.3] - 2017-08-17
 
 ### Fixed

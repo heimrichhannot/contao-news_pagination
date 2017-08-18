@@ -1,6 +1,6 @@
 {
     "name": "heimrichhannot/contao-news_pagination",
-    "description": "This module offers a character count based pagination for the news reader.",
+    "description": "This module offers manual content pagination for the news reader.",
     "keywords": [
         "contao",
         "news",
