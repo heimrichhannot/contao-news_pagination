@@ -8,8 +8,7 @@ $GLOBALS['TL_HOOKS']['parseArticles']['addNewsPagination'] = ['HeimrichHannot\Ne
 /**
  * Content elements
  */
-if (\Input::get('do') == 'news' && \Input::get('table') == 'tl_content' || TL_MODE == 'FE')
-{
+if (\Input::get('do') == 'news' && \Input::get('table') == 'tl_content' || TL_MODE == 'FE') {
     $GLOBALS['TL_CTE']['news_pagination'] = [
         \HeimrichHannot\NewsPagination\NewsPagination::CONTENT_ELEMENT_NEWS_PAGINATION_START => 'HeimrichHannot\NewsPagination\NewsPaginationStart',
         \HeimrichHannot\NewsPagination\NewsPagination::CONTENT_ELEMENT_NEWS_PAGINATION_STOP  => 'HeimrichHannot\NewsPagination\NewsPaginationStop'
@@ -20,4 +19,4 @@ if (\Input::get('do') == 'news' && \Input::get('table') == 'tl_content' || TL_MO
  * Wrapper
  */
 $GLOBALS['TL_WRAPPERS']['start'][] = \HeimrichHannot\NewsPagination\NewsPagination::CONTENT_ELEMENT_NEWS_PAGINATION_START;
-$GLOBALS['TL_WRAPPERS']['stop'][] = \HeimrichHannot\NewsPagination\NewsPagination::CONTENT_ELEMENT_NEWS_PAGINATION_STOP;
+$GLOBALS['TL_WRAPPERS']['stop'][]  = \HeimrichHannot\NewsPagination\NewsPagination::CONTENT_ELEMENT_NEWS_PAGINATION_STOP;
