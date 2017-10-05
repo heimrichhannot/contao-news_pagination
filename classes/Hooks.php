@@ -72,6 +72,7 @@ class Hooks extends \Controller
     public function doAddNewsPagination($objTemplate, $arrArticle, $objModule)
     {
         $intMaxAmount = $objModule->paginationMaxCharCount;
+
         // add wrapper div since remove() called on root elements doesn't work (bug?)
         $objNode              = new HtmlPageCrawler('<div><div class="news-pagination-content">' . $objTemplate->text . '</div></div>');
         $intTextAmount        = 0;
@@ -88,16 +89,12 @@ class Hooks extends \Controller
                     $objElement->filter($strCeTextCssSelector . ', figure')->each(
                         function ($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags)
                         {
+                            // replace multiple br elements to
+                            $objParagraph->html(preg_replace('<br><br>', '</p><p>', $objParagraph->html()));
+
                             if (in_array($objParagraph->getNode(0)->tagName, $arrTags))
                             {
-                                if ($intPage && is_numeric($intPage))
-                                {
-                                    $intTextAmount += strlen($objParagraph->text());
-                                }
-                                else
-                                {
-                                    $intTextAmount += strlen($objParagraph->text());
-                                }
+                                $intTextAmount += strlen($objParagraph->text());
                             }
 
                             static::removeNodeIfNecessary($intPage, $intTextAmount, $intMaxAmount, $objParagraph);

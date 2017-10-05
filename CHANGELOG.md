@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2017-10-05
+
+### Added
+- "<br>(<br>)+" is now auto converted to "</p><p>"
+
 ## [2.1.0] - 2017-08-25
 
 ### Fixed
