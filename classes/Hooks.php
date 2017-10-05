@@ -90,7 +90,7 @@ class Hooks extends \Controller
                         function ($objParagraph) use (&$intTextAmount, $intMaxAmount, $intPage, $arrTags)
                         {
                             // replace multiple br elements to
-                            $objParagraph->html(preg_replace('<br><br>', '</p><p>', $objParagraph->html()));
+                            $objParagraph->html(preg_replace('@<br\s?\/?><br\s?\/?>@i', '</p><p>', $objParagraph->html()));
 
                             if (in_array($objParagraph->getNode(0)->tagName, $arrTags))
                             {
