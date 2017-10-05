@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.4] - 2017-10-05
+
+### Fixed
+- line breaking algorithm
+
+## [2.1.3] - 2017-10-05
+
+### Fixed
+- linebreak recognition
+
 ## [2.1.2] - 2017-10-05
 
 ### Fixed
