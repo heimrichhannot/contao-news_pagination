@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.5] - 2017-10-10
+
+### Added
+- support for avoiding trailing headlines
+
 ## [2.1.4] - 2017-10-05
 
 ### Fixed
