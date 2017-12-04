@@ -3,6 +3,7 @@
 namespace HeimrichHannot\NewsPagination;
 
 
+use Contao\StringUtil;
 use HeimrichHannot\Request\Request;
 use Wa72\HtmlPageDom\HtmlPageCrawler;
 
@@ -34,7 +35,7 @@ class Hooks extends \Controller
         $intMaxIndex = 0;
 
         // add wrapper div since remove() called on root elements doesn't work (bug?)
-        $objNode          = new HtmlPageCrawler('<div><div class="news-pagination-content">' . $objTemplate->text . '</div></div>');
+        $objNode          = new HtmlPageCrawler('<div><div class="news-pagination-content">' . StringUtil::restoreBasicEntities($objTemplate->text) . '</div></div>');
         $objStartElements = $objNode->filter('.news-pagination-content > [class*="ce_news_pagination_start"]');
 
         if ($objStartElements->count() < 1) {
@@ -69,7 +70,7 @@ class Hooks extends \Controller
         $intPageCount = 1;
 
         // add wrapper div since remove() called on root elements doesn't work (bug?)
-        $objNode              = new HtmlPageCrawler('<div><div class="news-pagination-content">' . $objTemplate->text . '</div></div>');
+        $objNode              = new HtmlPageCrawler('<div><div class="news-pagination-content">' . StringUtil::restoreBasicEntities($objTemplate->text) . '</div></div>');
         $intTextAmount        = 0;
         $strCeTextCssSelector = $objModule->paginationCeTextCssSelector;
         $arrTags              = static::$arrTags;
