@@ -20,6 +20,11 @@ class Hooks extends \Controller
 
     public function addNewsPagination($objTemplate, $arrArticle, $objModule)
     {
+        if (\Input::get('print'))
+        {
+            return;
+        }
+
         if ($objModule->addManualPagination) {
             $this->doAddManualNewsPagination($objTemplate, $arrArticle, $objModule);
         }

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.6] - 2018-01-12
+
+### Added
+- skip pagination if print get param is set
+
 ## [2.1.5] - 2017-12-04
 
 ### Fixed
