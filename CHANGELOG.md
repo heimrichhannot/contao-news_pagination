@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.7] - 2018-01-17
+
+### Added
+- semaphore for manual vs. automatic pagination
+
 ## [2.1.6] - 2018-01-12
 
 ### Added

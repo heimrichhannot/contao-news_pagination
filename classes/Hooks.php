@@ -9,6 +9,8 @@ use Wa72\HtmlPageDom\HtmlPageCrawler;
 
 class Hooks extends \Controller
 {
+    protected static $manualPaginationFound = false;
+
     static $arrTags = [
         'p',
         'span',
@@ -29,7 +31,7 @@ class Hooks extends \Controller
             $this->doAddManualNewsPagination($objTemplate, $arrArticle, $objModule);
         }
 
-        if ($objModule->addPagination) {
+        if (!static::$manualPaginationFound && $objModule->addPagination) {
             $this->doAddNewsPagination($objTemplate, $arrArticle, $objModule);
         }
     }
@@ -46,6 +48,8 @@ class Hooks extends \Controller
         if ($objStartElements->count() < 1) {
             return;
         }
+
+        static::$manualPaginationFound = true;
 
         $objStartElements->each(
             function ($objElement) use ($intPage, &$intMaxIndex) {
