@@ -4,6 +4,7 @@ namespace HeimrichHannot\NewsPagination;
 
 
 use Contao\StringUtil;
+use HeimrichHannot\Haste\Util\Url;
 use HeimrichHannot\Request\Request;
 use Wa72\HtmlPageDom\HtmlPageCrawler;
 
@@ -22,8 +23,10 @@ class Hooks extends \Controller
 
     public function addNewsPagination($objTemplate, $arrArticle, $objModule)
     {
-        if (\Input::get('print'))
-        {
+        // no pagination if full version parameter is set
+        if ($objModule->fullVersionGetParameter && Request::getGet($objModule->fullVersionGetParameter) ||
+            $objModule->acceptPrintGetParameter && Request::getGet('print')
+        ) {
             return;
         }
 
@@ -71,6 +74,9 @@ class Hooks extends \Controller
         $objPagination               =
             new \Pagination($intMaxIndex, 1, \Config::get('maxPaginationLinks'), 'page_n' . $objModule->id);
         $objTemplate->newsPagination = $objPagination->generate("\n  ");
+
+        // meta
+        $this->handleMetaTags($intMaxIndex, $intPage, 'page_n' . $objModule->id, $objModule, $arrArticle['alias'], Url::getCurrentUrlWithoutParameters());
     }
 
     public function doAddNewsPagination($objTemplate, $arrArticle, $objModule)
@@ -207,6 +213,22 @@ class Hooks extends \Controller
         $objPagination               =
             new \Pagination($intPageCount, 1, \Config::get('maxPaginationLinks'), 'page_n' . $objModule->id);
         $objTemplate->newsPagination = $objPagination->generate("\n  ");
+
+        // meta
+        $this->handleMetaTags($intPageCount, $intCurrentPage, 'page_n' . $objModule->id, $objModule, $arrArticle['alias'], Url::getCurrentUrlWithoutParameters());
+    }
+
+    private function handleMetaTags($pageCount, $currentPage, $pageParam, $module, $alias, $url)
+    {
+        if ($pageCount < 2) {
+            return;
+        }
+
+        // canonical link must contain the current news url or not set
+        if ($module->addFullVersionCanonicalLink && $module->fullVersionGetParameter) {
+            // objPage is not working because PageModel::loadDetails() is not scalable :-(
+            $GLOBALS['HUH_META']['canonicalUrl'] = Url::addQueryString($module->fullVersionGetParameter . '=1', $url);
+        }
     }
 
     private static function removeNodeIfNecessary($intPage, &$intTextAmount, $intMaxAmount, $objElement, &$intPageCount)

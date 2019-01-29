@@ -12,7 +12,7 @@ $arrDca['palettes']['newsreader'] =
  * Subpalettes
  */
 $arrDca['palettes']['__selector__'][]   = 'addPagination';
-$arrDca['subpalettes']['addPagination'] = 'paginationMaxCharCount,paginationParentCssSelector,paginationCeTextCssSelector';
+$arrDca['subpalettes']['addPagination'] = 'paginationMaxCharCount,paginationParentCssSelector,paginationCeTextCssSelector,fullVersionGetParameter,acceptPrintGetParameter,addFullVersionCanonicalLink';
 
 /**
  * Fields
@@ -45,7 +45,29 @@ $arrFields = [
         'inputType' => 'text',
         'eval'      => ['tl_class' => 'w50', 'decodeEntities' => true],
         'sql'       => "varchar(128) NOT NULL default ''"
-    ]
+    ],
+    'fullVersionGetParameter'     => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_module']['fullVersionGetParameter'],
+        'exclude'   => true,
+        'search'    => true,
+        'inputType' => 'text',
+        'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+        'sql'       => "varchar(255) NOT NULL default 'full'"
+    ],
+    'acceptPrintGetParameter'     => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_module']['acceptPrintGetParameter'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => ['tl_class' => 'w50'],
+        'sql'       => "char(1) NOT NULL default ''"
+    ],
+    'addFullVersionCanonicalLink' => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_module']['addFullVersionCanonicalLink'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => ['tl_class' => 'w50'],
+        'sql'       => "char(1) NOT NULL default '1'"
+    ],
 ];
 
 $arrDca['fields'] += $arrFields;

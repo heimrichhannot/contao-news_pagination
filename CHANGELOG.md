@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2019-01-29
+
+### Added
+- canonical link handling
+- fullGetParameter
+
 ## [2.1.7] - 2018-01-17
 
 ### Added
